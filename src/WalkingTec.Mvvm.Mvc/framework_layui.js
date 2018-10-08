@@ -541,6 +541,40 @@ window.ff = {
         layui.table.render(option);
     },
 
+    CopyGridRow: function (gridid, option, index) {
+        layui.layer.prompt({
+            title: '请输入复制数量：'
+        }, function (val, n) {
+            var num = val;
+            layui.layer.close(n);
+            var loaddata = layui.table.cache[gridid];
+            var seldata = loaddata[index - 1];
+            for (var i = 0; i < num; i++) {
+                for (val in seldata) {
+                    if (val === "ID") {
+                        seldata[val] = ff.guid();
+                    }
+                    if (typeof (seldata[val]) == 'string') {
+                        seldata[val] = seldata[val].replace(/\[.*?\]/ig, "[" + loaddata.length + "]");
+                        var re = /(<input .*?)\s*\/>/ig;
+                        var re2 = /(<select .*?)\s*>(.*?<\/select>)/ig;
+                        var re3 = /(.*?)<input hidden name=\"(.*?)\.id\" .*?\/>(.*?)/ig;
+                        seldata[val] = seldata[val].replace(re, "$1 onchange=\"ff.gridcellchange(this,'" + gridid + "'," + loaddata.length + ",'" + val + "',0)\" />");
+                        seldata[val] = seldata[val].replace(re2, "$1 onchange=\"ff.gridcellchange(this,'" + gridid + "'," + loaddata.length + ",'" + val + "',1)\" >$2");
+                        seldata[val] = seldata[val].replace(re3, "$1 <input hidden name=\"$2.id\" value=\"" + seldata["ID"] + "\"/> $3");
+                    }
+                }
+                loaddata.push(seldata);
+            }
+
+            option.url = null;
+            option.data = loaddata;
+            option.limit = 9999;
+            layui.table.render(option);
+
+        });
+    },
+
     gridcellchange: function (ele, gridid, row, col, celltype) {
         var loaddata = layui.table.cache[gridid];
         if (celltype === 0) {

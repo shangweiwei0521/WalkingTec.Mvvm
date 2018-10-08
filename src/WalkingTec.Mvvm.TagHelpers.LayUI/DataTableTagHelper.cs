@@ -580,7 +580,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     {(!Even.HasValue ? ",even: true" : $",even: {Even.Value.ToString().ToLower()}")}
     {(!Size.HasValue ? string.Empty : $",size: '{Size.Value.ToString().ToLower()}'")}
 ,done: function(res,curr,count){{layer.close(msg);
-    {(Height==null ? $"var tab = $('#{Id} + .layui-table-view');tab.css('overflow','hidden').addClass('donotuse_fill donotuse_pdiv');tab.children('.layui-table-box').addClass('donotuse_fill donotuse_pdiv');tab.find('.layui-table-main').addClass('donotuse_fill');tab.find('.layui-table-header').css('min-height','40px');ff.triggerResize();" : string.Empty)}
+    {(Height == null ? $"var tab = $('#{Id} + .layui-table-view');tab.css('overflow','hidden').addClass('donotuse_fill donotuse_pdiv');tab.children('.layui-table-box').addClass('donotuse_fill donotuse_pdiv');tab.find('.layui-table-main').addClass('donotuse_fill');tab.find('.layui-table-header').css('min-height','40px');ff.triggerResize();" : string.Empty)}
     {(string.IsNullOrEmpty(DoneFunc) ? string.Empty : $"{DoneFunc}(res,curr,count)")}
 }}
 }}
@@ -611,26 +611,26 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
             //if (HiddenPanel) // 无 Panel
             //{
-                output.PreElement.AppendHtml($@"<div style=""text-align:right;margin-right:15px"">{toolBarBtnStrBuilder}</div>");
-           // }
-//            else // 有 Panel
-//            {
-//                #region 在数据列表外部套上一层 Panel
-//                toolBarBtnStrBuilder.Append("<style type=\"text/css\">.buttongroup:hover{opacity: initial;}</style>");
-//                output.PreElement.AppendHtml($@"
-//<div class=""layui-collapse donotuse_fill donotuse_pdiv"" >
-//  <div class=""layui-colla-item donotuse_fill donotuse_pdiv"">
-//    <h2 id=""{tempGridTitleId}"" class=""layui-colla-title"" style=""overflow: visible;"">{PanelTitle ?? "数据列表"}
-//      <!-- 数据列表按钮组 -->
-//      <div style=""text-align:right;margin-top:-43px;"">{toolBarBtnStrBuilder}</div>
-//    </h2>
-//    <div class=""layui-colla-content layui-show donotuse_fill donotuse_pdiv"" style=""padding:0;"">
-//");
-//                output.PostElement.AppendHtml($@"
-//    </div>
-//  </div>
-//</div>
-//<script>layui.element.init();$('#{tempGridTitleId} .layui-btn').on('click',function(e){{e.stopPropagation();}})</script>");
+            output.PreElement.AppendHtml($@"<div style=""text-align:right;margin-right:15px"">{toolBarBtnStrBuilder}</div>");
+            // }
+            //            else // 有 Panel
+            //            {
+            //                #region 在数据列表外部套上一层 Panel
+            //                toolBarBtnStrBuilder.Append("<style type=\"text/css\">.buttongroup:hover{opacity: initial;}</style>");
+            //                output.PreElement.AppendHtml($@"
+            //<div class=""layui-collapse donotuse_fill donotuse_pdiv"" >
+            //  <div class=""layui-colla-item donotuse_fill donotuse_pdiv"">
+            //    <h2 id=""{tempGridTitleId}"" class=""layui-colla-title"" style=""overflow: visible;"">{PanelTitle ?? "数据列表"}
+            //      <!-- 数据列表按钮组 -->
+            //      <div style=""text-align:right;margin-top:-43px;"">{toolBarBtnStrBuilder}</div>
+            //    </h2>
+            //    <div class=""layui-colla-content layui-show donotuse_fill donotuse_pdiv"" style=""padding:0;"">
+            //");
+            //                output.PostElement.AppendHtml($@"
+            //    </div>
+            //  </div>
+            //</div>
+            //<script>layui.element.init();$('#{tempGridTitleId} .layui-btn').on('click',function(e){{e.stopPropagation();}})</script>");
 
             //    #endregion
             //}
@@ -652,18 +652,23 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// <param name="isSub"></param>
         private void AddSubButton(string vmQualifiedName, StringBuilder rowBtnStrBuilder, StringBuilder toolBarBtnStrBuilder, StringBuilder gridBtnEventStrBuilder, BaseVM vm, GridAction item, bool isSub = false)
         {
-            if (vm.LoginUserInfo?.IsAccessable(item.Url) == true || item.ParameterType == GridActionParameterTypesEnum.AddRow || item.ParameterType == GridActionParameterTypesEnum.RemoveRow)
+            if (vm.LoginUserInfo?.IsAccessable(item.Url) == true || item.ParameterType == GridActionParameterTypesEnum.AddRow || item.ParameterType == GridActionParameterTypesEnum.RemoveRow || item.ParameterType == GridActionParameterTypesEnum.CopyRow)
             {
                 // Grid 行内按钮
                 if (item.ShowInRow)
                 {
-                    if (item.ParameterType != GridActionParameterTypesEnum.RemoveRow)
+                    if (item.ParameterType == GridActionParameterTypesEnum.RemoveRow)
                     {
-                        rowBtnStrBuilder.Append($@"<a class=""layui-btn layui-btn-primary layui-btn-xs"" lay-event=""{item.Area + item.ControllerName + item.ActionName + item.QueryString}"">{item.Name}</a>");
+                        rowBtnStrBuilder.Append($@"<a class=""layui-btn layui-btn-primary layui-btn-xs"" onclick=""ff.RemoveGridRow('{Id}',{Id}option,{{{{d.LAY_INDEX}}}});"">{item.Name}</a>");
+                    }
+                    else if (item.ParameterType == GridActionParameterTypesEnum.CopyRow)
+                    {
+                        rowBtnStrBuilder.Append($@"<a class=""layui-btn layui-btn-primary layui-btn-xs"" onclick=""ff.CopyGridRow('{Id}',{Id}option,{{{{d.LAY_INDEX}}}});"">{item.Name}</a>");
+
                     }
                     else
                     {
-                        rowBtnStrBuilder.Append($@"<a class=""layui-btn layui-btn-primary layui-btn-xs"" onclick=""ff.RemoveGridRow('{Id}',{Id}option,{{{{d.LAY_INDEX}}}});"">{item.Name}</a>");
+                        rowBtnStrBuilder.Append($@"<a class=""layui-btn layui-btn-primary layui-btn-xs"" lay-event=""{item.Area + item.ControllerName + item.ActionName + item.QueryString}"">{item.Name}</a>");
                     }
 
                 }

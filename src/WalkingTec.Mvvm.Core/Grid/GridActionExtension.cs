@@ -105,6 +105,12 @@ namespace WalkingTec.Mvvm.Core
                     gridname = "导入";
                     paraType = GridActionParameterTypesEnum.NoId;
                     break;
+                case GridActionStandardTypesEnum.CopyRow:
+                    gridname = "复制";
+                    paraType = GridActionParameterTypesEnum.CopyRow;
+                    showInRow = true;
+                    hideOnToolBar = true;
+                    break;
                 default:
                     break;
             }

@@ -30,7 +30,8 @@ namespace WalkingTec.Mvvm.Core
         /// </summary>
         MultiIdWithNull,
         AddRow,
-        RemoveRow
+        RemoveRow,
+        CopyRow
     }
 
     #endregion
@@ -51,7 +52,8 @@ namespace WalkingTec.Mvvm.Core
         Import,
         AddRow,
         RemoveRow,
-        ActionsGroup
+        ActionsGroup,
+        CopyRow
     }
     #endregion
 
